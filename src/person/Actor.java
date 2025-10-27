@@ -1,9 +1,11 @@
+package person;
+
 import java.util.Objects;
 
 public class Actor extends Person {
-    private double height; // Рост в см
+    private int height; // Рост в см
 
-    public Actor(String name, String surName, Genders gender, double height) {
+    public Actor(String name, String surName, Genders gender, int height) {
         super(name, surName, gender);
         this.height = height;
     }

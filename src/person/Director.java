@@ -1,9 +1,11 @@
+package person;
+
 import java.util.Objects;
 
 public class Director extends Person {
     private int numberOfShows;
 
-    public Director(String name, String surName, Genders gender,int numberOfShows) {
+    public Director(String name, String surName, Genders gender, int numberOfShows) {
         super(name, surName, gender);
         this.numberOfShows = numberOfShows;
     }

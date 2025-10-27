@@ -1,3 +1,11 @@
+import person.Actor;
+import person.Director;
+import person.Genders;
+import person.Person;
+import show.Ballet;
+import show.Opera;
+import show.Show;
+
 import java.util.Scanner;
 import java.util.ArrayList;
 
@@ -77,7 +85,7 @@ public class Theatre {
         System.out.println("Введите пол актёра, MALE если мужской, FEMALE если женский");
         Genders gender = Genders.valueOf(scanner.next());
         System.out.println("Введите рост человека в см:");
-        double height = scanner.nextDouble();
+        int height = scanner.nextInt();
         Actor actor = new Actor(name, surName, gender, height);
         if (listOfNewActors.contains(actor)) {
             System.out.println("Такой актер уже есть!");
@@ -121,7 +129,7 @@ public class Theatre {
                 String title = scanner.nextLine();
                 System.out.println("Введите продолжительность спектакля в минутах:");
                 int duration = scanner.nextInt();
-                Show show = new Show(title, duration, scanner);
+                Show show = new Show(title, duration);
                 listOfShows.add(show);
                 System.out.println("Спектакль создан!");
                 break;
@@ -143,7 +151,7 @@ public class Theatre {
                 String librettoText = scanner.nextLine();
                 System.out.println("Количество человек в хоре:");
                 int choirSize = scanner.nextInt();
-                Opera opera = new Opera(title, duration, scanner, musicAuthor, librettoText, choirSize);
+                Opera opera = new Opera(title, duration, musicAuthor, librettoText, choirSize);
                 listOfOperas.add(opera);
                 System.out.println("Спектакль создан!");
                 break;
@@ -170,7 +178,7 @@ public class Theatre {
                 System.out.println("Введите пол хореографа, MALE если мужской, FEMALE если женский");
                 gender = Genders.valueOf(scanner.next());
                 Person choreographer = new Person(name, surName, gender);
-                Ballet ballet = new Ballet(title, duration, scanner, musicAuthor, librettoText, choreographer);
+                Ballet ballet = new Ballet(title, duration, musicAuthor, librettoText, choreographer);
                 listofBallet.add(ballet);
                 System.out.println("Спектакль создан!");
                 break;
@@ -190,23 +198,40 @@ public class Theatre {
                 if (listOfShows.isEmpty()) {
                     System.out.println("Добавьте спектакль!");
                     return;
+                } else if (listOfNewActors.isEmpty()) {
+                    System.out.println("Вы не создали ни одного актёра!");
+                    return;
                 }
                 System.out.println("Выберите номер спектакля:");
                 for (int i = 0; i < listOfShows.size(); i++) {
                     System.out.print("Спектакль под номером " + (i + 1) + ": " + listOfShows.get(i));
                     System.out.println();
                 }
-                int selectedNumber = scanner.nextInt();
-                if ((selectedNumber - 1) > listOfShows.size() || (selectedNumber - 1) < 0) {
+                int showNumber = scanner.nextInt();
+                if ((showNumber - 1) > listOfShows.size() || (showNumber - 1) < 0) {
                     System.out.println("Неверный номер!");
                     return;
                 }
-                listOfShows.get(selectedNumber - 1).addActor(listOfNewActors);
+
+                System.out.println("Введите номер актёра, которого хотите добавить");
+                for (int i = 0; i < listOfNewActors.size(); i++) {
+                    System.out.print("№ " + (i + 1) + ": " + listOfNewActors.get(i));
+                    System.out.println();
+                }
+                int actorNumber = scanner.nextInt();
+                if ((actorNumber - 1) > listOfNewActors.size() || (actorNumber - 1) < 0) {
+                    System.out.println("Неверный номер!");
+                    return;
+                }
+                listOfShows.get(showNumber - 1).addActor(listOfNewActors, actorNumber);
                 System.out.println("Актёр добавлен в спектакль!");
                 break;
             case 2:
                 if (listOfOperas.isEmpty()) {
                     System.out.println("Добавьте спектакль!");
+                    return;
+                } else if (listOfNewActors.isEmpty()) {
+                    System.out.println("Вы не создали ни одного актёра!");
                     return;
                 }
                 System.out.println("Выберите номер оперы:");
@@ -214,17 +239,32 @@ public class Theatre {
                     System.out.print("Опера под номером " + (i + 1) + ": " + listOfOperas.get(i));
                     System.out.println();
                 }
-                selectedNumber = scanner.nextInt();
-                if ((selectedNumber - 1) > listOfOperas.size() || (selectedNumber - 1) < 0) {
+                showNumber = scanner.nextInt();
+                if ((showNumber - 1) > listOfOperas.size() || (showNumber - 1) < 0) {
                     System.out.println("Неверный номер!");
                     return;
                 }
-                listOfOperas.get(selectedNumber - 1).addActor(listOfNewActors);
+
+
+                System.out.println("Введите номер актёра, которого хотите добавить");
+                for (int i = 0; i < listOfNewActors.size(); i++) {
+                    System.out.print("№ " + (i + 1) + ": " + listOfNewActors.get(i));
+                    System.out.println();
+                }
+                actorNumber = scanner.nextInt();
+                if ((actorNumber - 1) > listOfNewActors.size() || (actorNumber - 1) < 0) {
+                    System.out.println("Неверный номер!");
+                    return;
+                }
+                listOfOperas.get(showNumber - 1).addActor(listOfNewActors, actorNumber);
                 System.out.println("Актёр добавлен в оперу!");
                 break;
             case 3:
                 if (listofBallet.isEmpty()) {
                     System.out.println("Добавьте спектакль!");
+                    return;
+                } else if (listOfNewActors.isEmpty()) {
+                    System.out.println("Вы не создали ни одного актёра!");
                     return;
                 }
                 System.out.println("Выберите номер балета:");
@@ -232,12 +272,24 @@ public class Theatre {
                     System.out.print("Балет под номером " + (i + 1) + ": " + listofBallet.get(i));
                     System.out.println();
                 }
-                selectedNumber = scanner.nextInt();
-                if ((selectedNumber - 1) > listofBallet.size() || (selectedNumber - 1) < 0) {
+                showNumber = scanner.nextInt();
+                if ((showNumber - 1) > listofBallet.size() || (showNumber - 1) < 0) {
                     System.out.println("Неверный номер!");
                     return;
                 }
-                listofBallet.get(selectedNumber - 1).addActor(listOfNewActors);
+
+
+                System.out.println("Введите номер актёра, которого хотите добавить");
+                for (int i = 0; i < listOfNewActors.size(); i++) {
+                    System.out.print("№ " + (i + 1) + ": " + listOfNewActors.get(i));
+                    System.out.println();
+                }
+                actorNumber = scanner.nextInt();
+                if ((actorNumber - 1) > listOfNewActors.size() || (actorNumber - 1) < 0) {
+                    System.out.println("Неверный номер!");
+                    return;
+                }
+                listofBallet.get(showNumber - 1).addActor(listOfNewActors, actorNumber);
                 System.out.println("Актёр добавлен в балет!");
                 break;
             default:
@@ -256,22 +308,40 @@ public class Theatre {
                 if (listOfShows.isEmpty()) {
                     System.out.println("Добавьте спектакль!");
                     return;
+                } else if (listOfNewDirectors.isEmpty()) {
+                    System.out.println("Вы не добавили ни одного режиссёра!");
+                    return;
                 }
                 System.out.println("Выберите номер спектакля:");
                 for (int i = 0; i < listOfShows.size(); i++) {
                     System.out.print("Спектакль под номером " + (i + 1) + ": " + listOfShows.get(i));
                     System.out.println();
                 }
-                int selectedNumber = scanner.nextInt();
-                if ((selectedNumber - 1) > listOfShows.size() || (selectedNumber - 1) < 0) {
+                int showNumber = scanner.nextInt();
+                if ((showNumber - 1) > listOfShows.size() || (showNumber - 1) < 0) {
                     System.out.println("Неверный номер!");
                     return;
                 }
-                listOfShows.get(selectedNumber - 1).setDirector(listOfNewDirectors);
+
+
+                System.out.println("Введите номер режиссёра, которого хотите добавить");
+                for (int i = 0; i < listOfNewDirectors.size(); i++) {
+                    System.out.print("№ " + (i + 1) + ": " + listOfNewDirectors.get(i));
+                    System.out.println();
+                }
+                int directorNumber = scanner.nextInt();
+                if ((directorNumber - 1) > listOfNewDirectors.size() || (directorNumber - 1) < 0) {
+                    System.out.println("Неверный номер!");
+                    return;
+                }
+                listOfShows.get(showNumber - 1).setDirector(listOfNewDirectors, directorNumber);
                 break;
             case 2:
                 if (listOfOperas.isEmpty()) {
                     System.out.println("Добавьте спектакль!");
+                    return;
+                } else if (listOfNewDirectors.isEmpty()) {
+                    System.out.println("Вы не добавили ни одного режиссёра!");
                     return;
                 }
                 System.out.println("Выберите номер оперы:");
@@ -279,16 +349,31 @@ public class Theatre {
                     System.out.print("Опера под номером " + (i + 1) + ": " + listOfOperas.get(i));
                     System.out.println();
                 }
-                selectedNumber = scanner.nextInt();
-                if ((selectedNumber - 1) > listOfOperas.size() || (selectedNumber - 1) < 0) {
+                showNumber = scanner.nextInt();
+                if ((showNumber - 1) > listOfOperas.size() || (showNumber - 1) < 0) {
                     System.out.println("Неверный номер!");
                     return;
                 }
-                listOfOperas.get(selectedNumber - 1).setDirector(listOfNewDirectors);
+
+
+                System.out.println("Введите номер режиссёра, которого хотите добавить");
+                for (int i = 0; i < listOfNewDirectors.size(); i++) {
+                    System.out.print("№ " + (i + 1) + ": " + listOfNewDirectors.get(i));
+                    System.out.println();
+                }
+                directorNumber = scanner.nextInt();
+                if ((directorNumber - 1) > listOfNewDirectors.size() || (directorNumber - 1) < 0) {
+                    System.out.println("Неверный номер!");
+                    return;
+                }
+                listOfOperas.get(showNumber - 1).setDirector(listOfNewDirectors, directorNumber);
                 break;
             case 3:
                 if (listofBallet.isEmpty()) {
                     System.out.println("Добавьте спектакль!");
+                    return;
+                } else if (listOfNewDirectors.isEmpty()) {
+                    System.out.println("Вы не добавили ни одного режиссёра!");
                     return;
                 }
                 System.out.println("Выберите номер балета:");
@@ -296,12 +381,24 @@ public class Theatre {
                     System.out.print("Балет под номером " + (i + 1) + ": " + listofBallet.get(i));
                     System.out.println();
                 }
-                selectedNumber = scanner.nextInt();
-                if ((selectedNumber - 1) > listofBallet.size() || (selectedNumber - 1) < 0) {
+                showNumber = scanner.nextInt();
+                if ((showNumber - 1) > listofBallet.size() || (showNumber - 1) < 0) {
                     System.out.println("Неверный номер!");
                     return;
                 }
-                listofBallet.get(selectedNumber - 1).setDirector(listOfNewDirectors);
+
+
+                System.out.println("Введите номер режиссёра, которого хотите добавить");
+                for (int i = 0; i < listOfNewDirectors.size(); i++) {
+                    System.out.print("№ " + (i + 1) + ": " + listOfNewDirectors.get(i));
+                    System.out.println();
+                }
+                directorNumber = scanner.nextInt();
+                if ((directorNumber - 1) > listOfNewDirectors.size() || (directorNumber - 1) < 0) {
+                    System.out.println("Неверный номер!");
+                    return;
+                }
+                listofBallet.get(showNumber - 1).setDirector(listOfNewDirectors, directorNumber);
                 break;
             default:
                 System.out.println("Неверный ввод команды!");
@@ -319,52 +416,130 @@ public class Theatre {
                 if (listOfShows.isEmpty()) {
                     System.out.println("Добавьте спектакль!");
                     return;
+                } else if (listOfNewActors.isEmpty()) {
+                    System.out.println("Вы не создали ни одного актёра!");
+                    return;
                 }
                 System.out.println("Выберите номер спектакля:");
                 for (int i = 0; i < listOfShows.size(); i++) {
                     System.out.print("Спектакль под номером " + (i + 1) + ": " + listOfShows.get(i));
                     System.out.println();
                 }
-                int selectedNumber = scanner.nextInt();
-                if ((selectedNumber - 1) > listOfShows.size() || (selectedNumber - 1) < 0) {
+                int showNumber = scanner.nextInt();
+                if ((showNumber - 1) > listOfShows.size() || (showNumber - 1) < 0) {
                     System.out.println("Неверный номер!");
                     return;
                 }
-                listOfShows.get(selectedNumber - 1).replaceActor(listOfNewActors);
+                if (listOfShows.get(showNumber - 1).getListOfActors().isEmpty()) {
+                    System.out.println("В этом спектакле нет ни одного актёра!");
+                    return;
+                }
+                System.out.println("Выберите номер актёра которого хотите заменить");
+                for (int i = 0; i < listOfShows.get(showNumber - 1).getListOfActors().size(); i++) {
+                    System.out.print("№ " + (i + 1) + ": " + listOfShows.get(showNumber - 1).getListOfActors().get(i));
+                    System.out.println();
+                }
+                int replacedActorNumber = scanner.nextInt();
+
+
+                System.out.println("Введите номер актёра, которого хотите добавить");
+                for (int i = 0; i < listOfNewActors.size(); i++) {
+                    System.out.print("№ " + (i + 1) + ": " + listOfNewActors.get(i));
+                    System.out.println();
+                }
+                int actorNumber = scanner.nextInt();
+                if ((actorNumber - 1) > listOfNewActors.size() || (actorNumber - 1) < 0) {
+                    System.out.println("Неверный номер!");
+                    return;
+                }
+
+                listOfShows.get(showNumber - 1).replaceActor(listOfNewActors, replacedActorNumber, actorNumber);
                 break;
             case 2:
                 if (listOfOperas.isEmpty()) {
                     System.out.println("Добавьте спектакль!");
                     return;
+                } else if (listOfNewActors.isEmpty()) {
+                    System.out.println("Вы не создали ни одного актёра!");
+                    return;
                 }
-                System.out.println("Выберите номер оперы:");
+                System.out.println("Выберите номер спектакля:");
                 for (int i = 0; i < listOfOperas.size(); i++) {
-                    System.out.print("Опера под номером " + (i + 1) + ": " + listOfOperas.get(i));
+                    System.out.print("Спектакль под номером " + (i + 1) + ": " + listOfOperas.get(i));
                     System.out.println();
                 }
-                selectedNumber = scanner.nextInt();
-                if ((selectedNumber - 1) > listOfOperas.size() || (selectedNumber - 1) < 0) {
+                showNumber = scanner.nextInt();
+                if ((showNumber - 1) > listOfOperas.size() || (showNumber - 1) < 0) {
                     System.out.println("Неверный номер!");
                     return;
                 }
-                listOfOperas.get(selectedNumber - 1).replaceActor(listOfNewActors);
+                if (listOfOperas.get(showNumber - 1).getListOfActors().isEmpty()) {
+                    System.out.println("В этом спектакле нет ни одного актёра!");
+                    return;
+                }
+                System.out.println("Выберите номер актёра которого хотите заменить");
+                for (int i = 0; i < listOfOperas.get(showNumber - 1).getListOfActors().size(); i++) {
+                    System.out.print("№ " + (i + 1) + ": " + listOfOperas.get(showNumber - 1).getListOfActors().get(i));
+                    System.out.println();
+                }
+                replacedActorNumber = scanner.nextInt();
+
+
+                System.out.println("Введите номер актёра, которого хотите добавить");
+                for (int i = 0; i < listOfNewActors.size(); i++) {
+                    System.out.print("№ " + (i + 1) + ": " + listOfNewActors.get(i));
+                    System.out.println();
+                }
+                actorNumber = scanner.nextInt();
+                if ((actorNumber - 1) > listOfNewActors.size() || (actorNumber - 1) < 0) {
+                    System.out.println("Неверный номер!");
+                    return;
+                }
+
+                listOfOperas.get(showNumber - 1).replaceActor(listOfNewActors, replacedActorNumber, actorNumber);
                 break;
             case 3:
                 if (listofBallet.isEmpty()) {
                     System.out.println("Добавьте спектакль!");
                     return;
+                } else if (listOfNewActors.isEmpty()) {
+                    System.out.println("Вы не создали ни одного актёра!");
+                    return;
                 }
-                System.out.println("Выберите номер балета:");
+                System.out.println("Выберите номер спектакля:");
                 for (int i = 0; i < listofBallet.size(); i++) {
-                    System.out.print("Балет под номером " + (i + 1) + ": " + listofBallet.get(i));
+                    System.out.print("Спектакль под номером " + (i + 1) + ": " + listofBallet.get(i));
                     System.out.println();
                 }
-                selectedNumber = scanner.nextInt();
-                if ((selectedNumber - 1) > listofBallet.size() || (selectedNumber - 1) < 0) {
+                showNumber = scanner.nextInt();
+                if ((showNumber - 1) > listofBallet.size() || (showNumber - 1) < 0) {
                     System.out.println("Неверный номер!");
                     return;
                 }
-                listofBallet.get(selectedNumber - 1).replaceActor(listOfNewActors);
+                if (listofBallet.get(showNumber - 1).getListOfActors().isEmpty()) {
+                    System.out.println("В этом спектакле нет ни одного актёра!");
+                    return;
+                }
+                System.out.println("Выберите номер актёра которого хотите заменить");
+                for (int i = 0; i < listofBallet.get(showNumber - 1).getListOfActors().size(); i++) {
+                    System.out.print("№ " + (i + 1) + ": " + listofBallet.get(showNumber - 1).getListOfActors().get(i));
+                    System.out.println();
+                }
+                replacedActorNumber = scanner.nextInt();
+
+
+                System.out.println("Введите номер актёра, которого хотите добавить");
+                for (int i = 0; i < listOfNewActors.size(); i++) {
+                    System.out.print("№ " + (i + 1) + ": " + listOfNewActors.get(i));
+                    System.out.println();
+                }
+                actorNumber = scanner.nextInt();
+                if ((actorNumber - 1) > listOfNewActors.size() || (actorNumber - 1) < 0) {
+                    System.out.println("Неверный номер!");
+                    return;
+                }
+
+                listofBallet.get(showNumber - 1).replaceActor(listOfNewActors, replacedActorNumber, actorNumber);
                 break;
             default:
                 System.out.println("Неверный ввод команды!");
@@ -387,12 +562,12 @@ public class Theatre {
                     System.out.print("Опера под номером " + (i + 1) + ": " + listOfOperas.get(i));
                     System.out.println();
                 }
-                int selectedNumber = scanner.nextInt();
-                if ((selectedNumber - 1) > listOfOperas.size() || (selectedNumber - 1) < 0) {
+                int showNumber = scanner.nextInt();
+                if ((showNumber - 1) > listOfOperas.size() || (showNumber - 1) < 0) {
                     System.out.println("Неверный номер!");
                     return;
                 }
-                System.out.println(listOfOperas.get(selectedNumber - 1).getLibrettoText());
+                System.out.println(listOfOperas.get(showNumber - 1).getLibrettoText());
                 break;
             case 2:
                 if (listofBallet.isEmpty()) {
@@ -404,12 +579,12 @@ public class Theatre {
                     System.out.print("Балет под номером " + (i + 1) + ": " + listofBallet.get(i));
                     System.out.println();
                 }
-                selectedNumber = scanner.nextInt();
-                if ((selectedNumber - 1) > listofBallet.size() || (selectedNumber - 1) < 0) {
+                showNumber = scanner.nextInt();
+                if ((showNumber - 1) > listofBallet.size() || (showNumber - 1) < 0) {
                     System.out.println("Неверный номер!");
                     return;
                 }
-                System.out.println(listofBallet.get(selectedNumber - 1).getLibrettoText());
+                System.out.println(listofBallet.get(showNumber - 1).getLibrettoText());
                 break;
             default:
                 System.out.println("Неверный ввод команды!");
@@ -433,12 +608,12 @@ public class Theatre {
                     System.out.print("Спектакль под номером " + (i + 1) + ": " + listOfShows.get(i));
                     System.out.println();
                 }
-                int selectedNumber = scanner.nextInt();
-                if ((selectedNumber - 1) > listOfShows.size() || (selectedNumber - 1) < 0) {
+                int showNumber = scanner.nextInt();
+                if ((showNumber - 1) > listOfShows.size() || (showNumber - 1) < 0) {
                     System.out.println("Неверный номер!");
                     return;
                 }
-                System.out.println(listOfShows.get(selectedNumber - 1).getDirector());
+                System.out.println(listOfShows.get(showNumber - 1).getDirector());
 
                 break;
             case 2:
@@ -451,12 +626,12 @@ public class Theatre {
                     System.out.print("Опера под номером " + (i + 1) + ": " + listOfOperas.get(i));
                     System.out.println();
                 }
-                selectedNumber = scanner.nextInt();
-                if ((selectedNumber - 1) > listOfOperas.size() || (selectedNumber - 1) < 0) {
+                showNumber = scanner.nextInt();
+                if ((showNumber - 1) > listOfOperas.size() || (showNumber - 1) < 0) {
                     System.out.println("Неверный номер!");
                     return;
                 }
-                System.out.println(listOfOperas.get(selectedNumber - 1).getDirector());
+                System.out.println(listOfOperas.get(showNumber - 1).getDirector());
                 break;
             case 3:
                 if (listOfOperas.isEmpty()) {
@@ -468,12 +643,12 @@ public class Theatre {
                     System.out.print("Балет под номером " + (i + 1) + ": " + listofBallet.get(i));
                     System.out.println();
                 }
-                selectedNumber = scanner.nextInt();
-                if ((selectedNumber - 1) > listofBallet.size() || (selectedNumber - 1) < 0) {
+                showNumber = scanner.nextInt();
+                if ((showNumber - 1) > listofBallet.size() || (showNumber - 1) < 0) {
                     System.out.println("Неверный номер!");
                     return;
                 }
-                System.out.println(listofBallet.get(selectedNumber - 1).getDirector());
+                System.out.println(listofBallet.get(showNumber - 1).getDirector());
                 break;
             default:
                 System.out.println("Неверный ввод команды!");
@@ -497,12 +672,12 @@ public class Theatre {
                     System.out.print("Спектакль под номером " + (i + 1) + ": " + listOfShows.get(i));
                     System.out.println();
                 }
-                int selectedNumber = scanner.nextInt();
-                if ((selectedNumber - 1) > listOfShows.size() || (selectedNumber - 1) < 0) {
+                int showNumber = scanner.nextInt();
+                if ((showNumber - 1) > listOfShows.size() || (showNumber - 1) < 0) {
                     System.out.println("Неверный номер!");
                     return;
                 }
-                System.out.println(listOfShows.get(selectedNumber - 1).getListOfActors());
+                System.out.println(listOfShows.get(showNumber - 1).getListOfActors());
 
                 break;
             case 2:
@@ -515,12 +690,12 @@ public class Theatre {
                     System.out.print("Опера под номером " + (i + 1) + ": " + listOfOperas.get(i));
                     System.out.println();
                 }
-                selectedNumber = scanner.nextInt();
-                if ((selectedNumber - 1) > listOfOperas.size() || (selectedNumber - 1) < 0) {
+                showNumber = scanner.nextInt();
+                if ((showNumber - 1) > listOfOperas.size() || (showNumber - 1) < 0) {
                     System.out.println("Неверный номер!");
                     return;
                 }
-                System.out.println(listOfOperas.get(selectedNumber - 1).getListOfActors());
+                System.out.println(listOfOperas.get(showNumber - 1).getListOfActors());
                 break;
             case 3:
                 if (listofBallet.isEmpty()) {
@@ -532,12 +707,12 @@ public class Theatre {
                     System.out.print("Балет под номером " + (i + 1) + ": " + listofBallet.get(i));
                     System.out.println();
                 }
-                selectedNumber = scanner.nextInt();
-                if ((selectedNumber - 1) > listofBallet.size() || (selectedNumber - 1) < 0) {
+                showNumber = scanner.nextInt();
+                if ((showNumber - 1) > listofBallet.size() || (showNumber - 1) < 0) {
                     System.out.println("Неверный номер!");
                     return;
                 }
-                System.out.println(listofBallet.get(selectedNumber - 1).getListOfActors());
+                System.out.println(listofBallet.get(showNumber - 1).getListOfActors());
                 break;
             default:
                 System.out.println("Неверный ввод команды!");

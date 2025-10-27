@@ -1,7 +1,9 @@
+package person;
+
 public class Person {
-    private String name;
-    private String surName;
-    private Genders gender;
+    protected String name;
+    protected String surName;
+    protected Genders gender;
 
     public Person(String name, String surName, Genders gender) {
         this.name = name;
